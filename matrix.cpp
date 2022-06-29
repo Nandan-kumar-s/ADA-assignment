@@ -1,39 +1,73 @@
-#include <bits/stdc++.h>
+#include<iostream>
 using namespace std;
-int MatrixChainOrder(int arr[], int n)
+
+void Matrix(int d[],int n)
 {
-int p[n][n];
-int i, j, k, l, q;
-for (i = 1; i < n; i++)
-p[i][i] = 0;
-for (l = 2; l < n; l++)
-{
-for (i = 1; i < n - l + 1; i++)
-{
-j = i + l - 1;
-p[i][j] = INT_MAX;
-for (k = i; k <= j - 1; k++)
-{
-q = p[i][k] + p[k + 1][j]
-+ arr[i - 1] * arr[k] * arr[j];
-if (q < p[i][j])
-p[i][j] = q;
+    int a[n][n],b[n],min,count=0;
+    bool var[n];
+    string eq="(";
+    for(int i=0;i<n;i++)
+    {
+        var[i]=false;
+        for(int j=0;j<n-i;j++)
+        {
+            a[j][j+i]=9999;
+            for(int k=j;k<j+i;k++)
+            {
+               min=a[j][k]+a[k+1][j+i]+(d[j]*d[k+1]*d[j+i+1]);
+                if(min<a[j][j+i])
+                {
+                    a[j][j+i]=min;
+                    if(j==0)
+                        b[j+i]=k;
+                }
+            }
+            if(i==0)
+                a[j][j+i]=0;
+        }
+    }
+    for(int i=n-1;i>0;i--)
+        var[b[i]+1]=true;
+    for(int i=1;i<n;i++)
+    {
+        if(var[i])
+        {
+            eq+="A"+to_string(i)+")";
+            count++;
+        }
+        else
+            eq+="A"+to_string(i);
+    }
+    for(int i=0;i<count;i++)
+        eq="("+eq;
+    eq+="A"+to_string(n)+")";
+    cout<<endl<<"Minimum Multiplications: "<<a[0][n-1]<<endl;
+    cout<<"The equation with minimum multiplications is: "<<eq<<endl;
 }
-}
-}
-return p[1][n - 1];
-}
+
 int main()
 {
-int n;
-cout<<"Enter the size of the array"<<endl;
-cin>>n;
-int arr[n];
-cout<<"Enter the array"<<endl;
-for(int i=0;i<n;i++){
-cin>>arr[i];
-}
-cout << "Minimum matrix multiplications is "
-<< MatrixChainOrder(arr, n);
-return 0;
+    int n;
+    cout<<"Enter the number of matrices\n";
+    cin>>n;
+    int a[n][2];
+    int d[n+1];
+cout<<"Enter the size of the matrices in order of row and columns\n";
+    for(int i=0;i<n;i++)
+    {
+        cout<<"Matrix "<<i+1<<endl;
+        cout<<"Row: ";
+        cin>>a[i][0];
+        cout<<"Column: ";
+        cin>>a[i][1];
+    }
+    for(int i=0;i<=n;i++)
+    {
+        if(i!=n)
+            d[i]=a[i][0];
+        else
+            d[i]=a[i-1][1];
+    }
+    Matrix(d,n);
+    return 0;
 }
